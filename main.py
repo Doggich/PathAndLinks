@@ -495,5 +495,4 @@ class Path:
 # class ByteLink:
 #     def __init__(self, *args: Any) -> None:
 
-file = Path("test_file.txt")
-print(".txt" in file)
+
