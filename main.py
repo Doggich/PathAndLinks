@@ -376,8 +376,8 @@ class Path:
         :return: The Path object itself.
         """
         try:
-            with open(self.path, "a") as file:
-                file.write(other)
+            with open(self.path, "a") as file_:
+                file_.write(other)
         except Exception as e:
             print(f"Error writing to file: {e}")
         return self
@@ -453,37 +453,47 @@ class Path:
         from os import rmdir
         rmdir(self.path)
 
-    def read(self, mode: str = "r") -> list:
+    def read(self, mode: str = "r", encoding: str = "utf-8") -> list:
         """
         Reads the content of the file at the specified path.
 
+        :param encoding for file
         :param mode: The mode in which to open the file (default is 'r').
         :return: A list of lines from the file.
         :raises Exception: If an error occurs during reading.
         """
         try:
-            with open(self.path, mode) as file:
-                return file.readlines()
+            with open(self.path, mode, encoding=encoding) as file_:
+                return file_.readlines()
         except Exception as e:
             print(f"Error reading file: {e}")
             return []
 
-    def in_file(self, item: str, mode: str = "r") -> bool:
+    def in_file(self, item: str, mode: str = "r", encoding: str = "utf-8") -> bool:
         """
         Checks if the given item is in the content of the file at the specified path.
 
         :param item: The item to check for in the file content.
         :param mode: The mode in which to open the file (default is 'r').
+        :param encoding: The encoding for the file (default is 'utf-8').
         :return: True if the item is in the file content, False otherwise.
         :raises Exception: If an error occurs during reading.
         """
+
         try:
-            with open(self.path, mode) as file:
-                content = file.read()
-            return item in content
+            with open(self.path, mode, encoding=encoding) as file_:
+                content = file_.read()
+                return item in content
+        except FileNotFoundError as e:
+            print(f"File not found: {e}")
+            return False
         except Exception as e:
             print(f"Error reading file: {e}")
             return False
 
+
 # class ByteLink:
 #     def __init__(self, *args: Any) -> None:
+
+file = Path("test_file.txt")
+print(".txt" in file)
