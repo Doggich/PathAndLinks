@@ -74,6 +74,9 @@ class Link:
         """
         return f"{self.objects}"
 
+    def __len__(self) -> int:
+        return len(self.objects)
+
     def __sizeof__(self) -> int:
         """
         Returns the size of the list of objects in bytes.
@@ -81,9 +84,9 @@ class Link:
         :return: Size of the list of objects in bytes.
         """
         from sys import getsizeof
-        return getsizeof(self.objects)
+        return getsizeof(self) + getsizeof(self.objects)
 
-    def __format__(self, format_spec) -> Any:
+    def __format__(self, format_spec) -> str:
         from sys import getsizeof
         """
         Formats the Link object according to the format specifier.
@@ -91,10 +94,12 @@ class Link:
         :param format_spec: Format specifier.
         :return: Formatted representation of the Link object.
         """
-        if format_spec == "*":
-            return self.objects
-        else:
-            return f"Size: {getsizeof(self.objects)}\nElements: {self.objects}"
+        if format_spec in ["*", "all"]:
+            return f"Size: {getsizeof(self.objects)}\nElements: {' '.join(map(str, self.objects))}"
+        elif format_spec in ["!", "object"]:
+            return ' '.join(map(str, self.objects))
+        elif format_spec in ["@", "size"]:
+            return str(getsizeof(self.objects))
 
     def __eq__(self, other: "Link") -> bool:
         """
@@ -167,7 +172,10 @@ class Link:
         :param other: Element to remove.
         :return: Link object with the updated list.
         """
-        self.objects.remove(other)
+        try:
+            self.objects.remove(other)
+        except ValueError:
+            raise ValueError("Element not found in the list")
         return self
 
     def __getitem__(self, index: int) -> Any:
@@ -240,7 +248,6 @@ class Link:
         :param index: Index for inserting the element.
         """
         self.objects.insert(index, value)
-        del self.objects[index + 1]
 
     def cell_size(self, index: int, unit: str = "bytes") -> float:
         from sys import getsizeof
@@ -251,6 +258,8 @@ class Link:
         :param unit: Unit of measurement (default is "bytes", add param: kb, mb, gb, tb).
         :return: Size of the element in the specified unit.
         """
+        if index < 0 or index >= len(self.objects):
+            raise IndexError("Incorrect index!")
         size_in_bytes = getsizeof(self.objects[index])
 
         if unit.lower() == "bytes":
@@ -494,5 +503,4 @@ class Path:
 
 # class ByteLink:
 #     def __init__(self, *args: Any) -> None:
-
 
