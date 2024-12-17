@@ -81,7 +81,7 @@ class Link:
         """
         Returns the size of the list of objects in bytes.
 
-        :return: Size of the list of objects in bytes.
+        :return: Size of the list of objects in bytes
         """
         from sys import getsizeof
         return getsizeof(self) + getsizeof(self.objects)
